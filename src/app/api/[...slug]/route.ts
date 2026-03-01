@@ -1,5 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// Vercel serverless functions restrict body sizes to 4MB by default.
+// Since we are proxying potentially large files (PDFs/Images) to the Python backend,
+// we need to bypass the default bodyParser size limit.
+// We are proxying NextRequest natively.
+export const maxDuration = 60; // Set max duration if doing long OCR
+
+export const config = {
+    api: {
+        bodyParser: false, // Disallow body parsing, consume as stream
+        externalResolver: true,
+    },
+};
+
 export async function POST(req: NextRequest, { params }: { params: Promise<{ slug: string[] }> }) {
     return handleProxy(req, params);
 }
@@ -40,7 +53,7 @@ async function handleProxy(req: NextRequest, paramsPromise: Promise<{ slug: stri
             const body = await req.text();
             if (body) {
                 fetchInit.body = body;
-                console.log(`[Proxy] Request body size: ${body.length} bytes`);
+                console.log(`[Proxy] Request body size: ${(body.length / 1024 / 1024).toFixed(2)} MB`);
             }
         }
 
@@ -64,3 +77,4 @@ async function handleProxy(req: NextRequest, paramsPromise: Promise<{ slug: stri
         );
     }
 }
+
