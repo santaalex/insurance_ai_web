@@ -60,9 +60,9 @@ export function PolicyUploaderModal() {
 
             const token = useAuthStore.getState().token;
 
-            // Bypass Next.js rewrite proxy, call backend directly if configured
-            const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
-            const response = await fetch(`${backendUrl}/api/policy/extract_and_save`, {
+            // Use native fetch to consume the NDJSON streaming response chunk by chunk
+            // MUST hit Vercel proxy (/api/...) to avoid Mixed Content (HTTPS Vercel -> HTTP Backend) blockade
+            const response = await fetch("/api/policy/extract_and_save", {
                 method: "POST",
                 body: formData,
                 headers: {
