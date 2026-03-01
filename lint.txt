@@ -1,0 +1,44 @@
+﻿
+D:\Projects\ChunGe\insurance_ai_web\src\app\dashboard\members\page.tsx
+  26:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\Projects\ChunGe\insurance_ai_web\src\app\dashboard\members\page.tsx:26:13
+  24 |     useEffect(() => {
+  25 |         if (members.length > 0 && !activeTab) {
+> 26 |             setActiveTab(members[0].id);
+     |             ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  27 |         }
+  28 |     }, [members, activeTab]);
+  29 |  react-hooks/set-state-in-effect
+
+D:\Projects\ChunGe\insurance_ai_web\src\app\page.tsx
+  25:11  warning  'token' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\Projects\ChunGe\insurance_ai_web\src\components\layout\sidebar.tsx
+  5:23  warning  'Settings' is defined but never used  @typescript-eslint/no-unused-vars
+  5:41  warning  'FileText' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Projects\ChunGe\insurance_ai_web\src\components\merge-identities-modal.tsx
+  2:52  warning  'DialogFooter' is defined but never used  @typescript-eslint/no-unused-vars
+  5:19  warning  'AlertCircle' is defined but never used   @typescript-eslint/no-unused-vars
+  5:32  warning  'CheckCircle2' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Projects\ChunGe\insurance_ai_web\src\components\policy-card.tsx
+  1:47  warning  'CreditCard' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Projects\ChunGe\insurance_ai_web\src\components\policy-uploader-modal.tsx
+    4:23  warning  'Bot' is defined but never used           @typescript-eslint/no-unused-vars
+   14:10  warning  'request' is defined but never used       @typescript-eslint/no-unused-vars
+   16:8   warning  'axios' is defined but never used         @typescript-eslint/no-unused-vars
+   24:42  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   90:33  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  109:25  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+鉁?14 problems (4 errors, 10 warnings)
+

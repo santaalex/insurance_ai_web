@@ -7,9 +7,8 @@ import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth";
 
 const navItems = [
-    { name: "保单总览", href: "/dashboard", icon: Home },
-    { name: "家庭成员", href: "/dashboard/members", icon: Users },
-    { name: "全险种图表", href: "/dashboard/charts", icon: FileText }, // Placeholder for future
+    { name: "保单金库", href: "/dashboard", icon: Home },
+    { name: "家庭图谱", href: "/dashboard/members", icon: Users },
 ];
 
 export function Sidebar() {
@@ -17,12 +16,12 @@ export function Sidebar() {
     const { logout } = useAuthStore();
 
     return (
-        <div className="flex h-full w-64 flex-col border-r bg-zinc-50/50 dark:bg-zinc-900/50">
+        <div className="flex h-full w-64 flex-col border-r border-slate-200 bg-white">
             <div className="p-6">
-                <h2 className="text-xl font-bold tracking-tighter text-zinc-900 dark:text-zinc-50">
+                <h2 className="text-xl font-bold tracking-tighter text-slate-800">
                     家庭保单管家
                 </h2>
-                <p className="text-xs text-zinc-500 mt-1">Intelligent Hub</p>
+                <p className="text-xs text-slate-500 mt-1">Intelligent Hub</p>
             </div>
 
             <div className="flex-1 overflow-auto py-4">
@@ -36,13 +35,13 @@ export function Sidebar() {
                                 key={index}
                                 href={item.href}
                                 className={cn(
-                                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                                    "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all",
                                     isActive
-                                        ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-50 dark:text-zinc-900"
-                                        : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                                        ? "bg-emerald-50 text-emerald-700 font-semibold"
+                                        : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                                 )}
                             >
-                                <Icon className="h-4 w-4" />
+                                <Icon className={cn("h-4 w-4", isActive ? "text-emerald-500" : "")} />
                                 {item.name}
                             </Link>
                         );
@@ -50,13 +49,13 @@ export function Sidebar() {
                 </nav>
             </div>
 
-            <div className="p-4 border-t">
+            <div className="p-4 border-t border-slate-100">
                 <button
                     onClick={() => {
                         logout();
                         window.location.href = "/";
                     }}
-                    className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/50 transition-colors"
+                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-slate-500 hover:bg-red-50 hover:text-red-600 transition-colors"
                 >
                     <LogOut className="h-4 w-4" />
                     安全退出
