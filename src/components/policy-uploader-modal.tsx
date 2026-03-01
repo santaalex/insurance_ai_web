@@ -60,9 +60,9 @@ export function PolicyUploaderModal() {
 
             const token = useAuthStore.getState().token;
 
-            // Use native fetch to consume the NDJSON streaming response chunk by chunk
-            // The Next.js rewrite in next.config.ts will map /api to the backend
-            const response = await fetch("/api/policy/extract_and_save", {
+            // Bypass Next.js rewrite proxy, call backend directly if configured
+            const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
+            const response = await fetch(`${backendUrl}/api/policy/extract_and_save`, {
                 method: "POST",
                 body: formData,
                 headers: {

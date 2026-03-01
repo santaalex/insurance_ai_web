@@ -2,7 +2,8 @@ import axios from "axios";
 import { useAuthStore } from "@/store/auth";
 
 export const request = axios.create({
-    baseURL: "/api", // Next.js rewrite will proxy this to the backend
+    // If NEXT_PUBLIC_API_URL is baked in from Vercel env, hit that directly. Else fallback to proxy.
+    baseURL: process.env.NEXT_PUBLIC_API_URL || "/api",
     timeout: 60000,
     headers: {
         "Content-Type": "application/json",
