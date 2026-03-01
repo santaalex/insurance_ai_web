@@ -59,10 +59,14 @@ export function PolicyUploaderModal() {
             setLogs(["📥 启动本地长图加密通道...", "🚀 连接至后方多模态网络中枢..."]);
 
             const token = useAuthStore.getState().token;
+            // Get backend URL explicitly or fallback
+            // We use NEXT_PUBLIC_API_URL so the frontend can resolve it directly without Vercel's 60s limit
+            const backendUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, '') || "http://47.110.232.225:8000";
+            const targetUrl = `${backendUrl}/api/policy/extract_and_save`;
 
             // Use native fetch to consume the NDJSON streaming response chunk by chunk
-            // MUST hit Vercel proxy (/api/...) to avoid Mixed Content (HTTPS Vercel -> HTTP Backend) blockade
-            const response = await fetch("/api/policy/extract_and_save", {
+            // Hit backend directly to bypass Vercel Hobby 60s Execution Timeout!
+            const response = await fetch(targetUrl, {
                 method: "POST",
                 body: formData,
                 headers: {
