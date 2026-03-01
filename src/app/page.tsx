@@ -20,7 +20,9 @@ import { ShieldCheck, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   const [phone, setPhone] = useState("");
+  const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const [countdown, setCountdown] = useState(0);
   const router = useRouter();
   const { token, setAuth } = useAuthStore();
   const [mounted, setMounted] = useState(false);
@@ -34,12 +36,43 @@ export default function LoginPage() {
     }
   }, [router]);
 
+  // Countdown timer for SMS
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [countdown]);
+
   if (!mounted) return null; // Avoid rendering until hydration completes
+
+  const handleSendSms = async () => {
+    if (!phone || phone.length !== 11) {
+      toast.error("请输入有效的 11 位手机号码");
+      return;
+    }
+
+    try {
+      await request.post("/auth/send-sms", { phone });
+      toast.success("验证码已发送，请注意查收");
+      setCountdown(60); // Start 60s countdown
+    } catch (error: any) {
+      // Axios error handling to get backend detail message if available
+      const errorMsg = error.response?.data?.detail || "发送失败，请稍后再试";
+      toast.error(errorMsg);
+      console.error(error);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phone || phone.length < 11) {
+    if (!phone || phone.length !== 11) {
       toast.error("请输入有效的 11 位手机号码");
+      return;
+    }
+    if (!code || code.length !== 6) {
+      toast.error("请输入 6 位短信验证码");
       return;
     }
 
@@ -48,7 +81,7 @@ export default function LoginPage() {
       // Direct call to FastAPI login backend (proxied via Next.js rewrites)
       const res = await request.post("/auth/login", {
         phone: phone,
-        code: "123456",
+        code: code,
       });
 
       if (res.data.access_token) {
@@ -60,9 +93,10 @@ export default function LoginPage() {
           router.push("/dashboard");
         }, 1000);
       }
-    } catch (error) {
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.detail || "验证码错误或已过期";
       toast.error("登录异常", {
-        description: "请检查网络或确认手机号是否在系统白名单内",
+        description: errorMsg,
       });
       console.error(error);
     } finally {
@@ -102,19 +136,33 @@ export default function LoginPage() {
                 disabled={loading}
               />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="code" className="text-zinc-500">
-                短信验证码 (开发阶段默认为 123456)
-              </Label>
-              <Input
-                id="code"
-                type="text"
-                placeholder="123456"
-                disabled
-                className="h-11 bg-zinc-100 text-zinc-400 dark:bg-zinc-900"
-                value="123456"
-              />
+              <Label htmlFor="code">短信验证码</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="code"
+                  type="text"
+                  placeholder="请输入 6 位验证码"
+                  required
+                  maxLength={6}
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  className="h-11"
+                  disabled={loading}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-11 w-[120px] shrink-0"
+                  disabled={countdown > 0 || loading || phone.length !== 11}
+                  onClick={handleSendSms}
+                >
+                  {countdown > 0 ? `${countdown}s 后重发` : "获取验证码"}
+                </Button>
+              </div>
             </div>
+
             <Button
               type="submit"
               className="w-full h-11 text-base font-medium mt-2"
