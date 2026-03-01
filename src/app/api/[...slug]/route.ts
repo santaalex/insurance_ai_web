@@ -13,8 +13,8 @@ async function handleProxy(req: NextRequest, paramsPromise: Promise<{ slug: stri
         const { slug } = await paramsPromise;
         const slugPath = slug.join("/");
 
-        // Remove trailing slash if any
-        let backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+        // If Vercel env var is missing, default directly to the Alibaba Cloud backend
+        let backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://47.110.232.225:8000";
         if (backendUrl.endsWith("/")) {
             backendUrl = backendUrl.slice(0, -1);
         }
