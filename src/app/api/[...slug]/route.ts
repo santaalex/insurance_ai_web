@@ -6,12 +6,8 @@ import { NextRequest, NextResponse } from "next/server";
 // We are proxying NextRequest natively.
 export const maxDuration = 60; // Set max duration if doing long OCR
 
-export const config = {
-    api: {
-        bodyParser: false, // Disallow body parsing, consume as stream
-        externalResolver: true,
-    },
-};
+
+
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ slug: string[] }> }) {
     return handleProxy(req, params);
