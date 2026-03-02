@@ -32,6 +32,20 @@ export function PolicyUploaderModal() {
     const [result, setResult] = useState<ExtractionResult | null>(null);
     const [logs, setLogs] = useState<string[]>([]);
 
+    const handleOpenChange = (newOpen: boolean) => {
+        setOpen(newOpen);
+        if (!newOpen) {
+            // Reset all states when modal is closed
+            setTimeout(() => {
+                setFile(null);
+                setResult(null);
+                setIsUploading(false);
+                setIsAnalyzing(false);
+                setLogs([]);
+            }, 300); // Wait for the exit animation to finish before clearing
+        }
+    };
+
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
     };
@@ -64,13 +78,26 @@ export function PolicyUploaderModal() {
             // This bypasses Vercel's 60s timeout entirely while maintaining strict HTTPS!
             const targetUrl = "https://47.238.82.250.nip.io/api/policy/extract_and_save";
 
-            const response = await fetch(targetUrl, {
+            // 阶段3: 前端直连部署在香港服务器的 AI 网关，绕过 Vercel 的 60s Serverless 限制
+            // 注意：这里必须用完全一致的 https 协议域名，否则会触发 Mixed Content 或 CORS 拦截
+            const response = await fetch("https://47.238.82.250.nip.io/api/policy/extract_and_save", {
                 method: "POST",
                 body: formData,
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
-            });
+            })
+
+            if (!response.ok) {
+                let msg = `HTTP error! status: ${response.status}`
+                try {
+                    const errorData = await response.json()
+                    msg = errorData.detail || msg
+                } catch (e) {
+                    // 忽略 json 解析错误
+                }
+                throw new Error(msg)
+            }
 
             if (!response.body) throw new Error("服务器未响应数据流");
 
@@ -129,7 +156,7 @@ export function PolicyUploaderModal() {
     };
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
                 <div className="absolute bottom-10 right-10">
                     <Button
