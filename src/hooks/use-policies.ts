@@ -9,6 +9,7 @@ export interface Policy {
     coverage_amount: string;
     effective_date: string;
     insured_person: string;
+    raw_json?: string;
     status: string;
 }
 

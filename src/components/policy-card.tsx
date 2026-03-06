@@ -1,7 +1,7 @@
 import { FileText, ShieldCheck, MoreVertical, CreditCard } from "lucide-react";
 import { Policy } from "@/hooks/use-policies";
 
-export function PolicyCard({ policy }: { policy: Policy }) {
+export function PolicyCard({ policy, onClick }: { policy: Policy; onClick?: () => void }) {
     // Format currency (crude but effective for visualization)
     const formatMoney = (amount: string) => {
         // try to match numbers in the string
@@ -13,7 +13,11 @@ export function PolicyCard({ policy }: { policy: Policy }) {
     };
 
     return (
-        <div className="group relative bg-white border border-slate-200/60 rounded-2xl p-6 hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-1 transition-all duration-300 overflow-hidden isolate">
+        <div
+            onClick={onClick}
+            role={onClick ? "button" : "region"}
+            className="group relative bg-white border border-slate-200/60 rounded-2xl p-6 hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-1 transition-all duration-300 overflow-hidden isolate cursor-pointer"
+        >
             {/* Background glowing circle for aesthetic depth */}
             <div className="absolute -top-12 -right-12 w-32 h-32 bg-emerald-100 rounded-full blur-3xl opacity-0 group-hover:opacity-60 transition-opacity duration-500 -z-10" />
 

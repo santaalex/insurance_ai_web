@@ -1,11 +1,14 @@
 "use client";
 
-import { usePolicies } from "@/hooks/use-policies";
+import { useState } from "react";
+import { usePolicies, type Policy } from "@/hooks/use-policies";
 import { PolicyCard } from "@/components/policy-card";
+import { PolicyDrawer } from "@/components/policy-drawer";
 import { Shield, FileText, Loader2 } from "lucide-react";
 
 export default function DashboardOverview() {
     const { policies, total, isLoading, isError } = usePolicies();
+    const [selectedPolicy, setSelectedPolicy] = useState<Policy | null>(null);
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
@@ -48,10 +51,19 @@ export default function DashboardOverview() {
                 // Data Grid View
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {policies.map((policy) => (
-                        <PolicyCard key={policy.id} policy={policy} />
+                        <PolicyCard
+                            key={policy.id}
+                            policy={policy}
+                            onClick={() => setSelectedPolicy(policy)}
+                        />
                     ))}
                 </div>
             )}
+
+            <PolicyDrawer
+                policy={selectedPolicy}
+                onClose={() => setSelectedPolicy(null)}
+            />
         </div>
     );
 }
