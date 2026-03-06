@@ -37,14 +37,14 @@ export function PolicyDrawer({ policy, onClose }: PolicyDrawerProps) {
 
     // Format money safely
     const formatMoney = (amount: any) => {
-        if (!amount || amount === "null") return "¥0";
+        if (amount === undefined || amount === null || amount === "null" || amount === "") return "¥0";
         const num = String(amount).replace(/[^0-9.]/g, '');
         if (num) return `¥${parseInt(num).toLocaleString()}`;
         return String(amount);
     };
 
     const safeVal = (val: any, fallback = "-") => {
-        if (!val || val === "null" || val === "None") return fallback;
+        if (val === undefined || val === null || val === "null" || val === "None" || val === "") return fallback;
         return val;
     };
 
