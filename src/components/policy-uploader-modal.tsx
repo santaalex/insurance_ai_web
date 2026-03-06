@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UploadCloud, Bot, CheckCircle2, Loader2, ArrowRight } from "lucide-react";
+import { mutate } from "swr";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -45,6 +46,33 @@ export function PolicyUploaderModal() {
             }, 300); // Wait for the exit animation to finish before clearing
         }
     };
+
+    // AI "thinking" logs simulation for better UX during wait times
+    useEffect(() => {
+        if (!isAnalyzing || !!result) return;
+
+        const demoLogs = [
+            "🔍 正在分析长文中包含的家庭图谱与人员关系...",
+            "🧠 启动并发节点，校验主险基本保额与理赔条款...",
+            "⚖️ 计算免赔额度与保险除外责任...",
+            "⏳ 硅基大脑正在进行深度图文多模态纠错...",
+            "🤖 抽取保障明细，映射至标准数据结构中...",
+            "📑 解析附加险保障范围及缴费期满日...",
+        ];
+
+        let count = 0;
+        const interval = setInterval(() => {
+            if (count < demoLogs.length) {
+                // Add a bit of randomness to when the log appears
+                if (Math.random() > 0.3) {
+                    setLogs(prev => [...prev, demoLogs[count]]);
+                    count++;
+                }
+            }
+        }, 3000); // Check every 3 seconds to slowly push logs out
+
+        return () => clearInterval(interval);
+    }, [isAnalyzing, result]);
 
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
@@ -141,6 +169,8 @@ export function PolicyUploaderModal() {
                     toast.success(finalResult.message || "成功落地明道云", {
                         description: "保单已被大模型精准摘录、脱敏并归档",
                     });
+                    // Force refresh the dashboard list
+                    mutate('/policy/list');
                 }, 1500);
             }
 
