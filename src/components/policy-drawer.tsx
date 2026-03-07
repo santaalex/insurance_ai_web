@@ -32,18 +32,37 @@ export function PolicyDrawer({ policy, onClose }: PolicyDrawerProps) {
             details = JSON.parse(policy.raw_json);
         }
     } catch {
-        // Fallback: extract the last JSON object/array from the mixed Markdown+JSON content
+        // Fallback: extract JSON from the mixed Markdown+JSON extraction log
         try {
             if (policy.raw_json) {
-                // Find the last ```json ... ``` code block
-                const jsonBlocks = policy.raw_json.match(/```json\s*([\s\S]*?)```/g);
-                if (jsonBlocks && jsonBlocks.length > 0) {
-                    const lastBlock = jsonBlocks[jsonBlocks.length - 1]
-                        .replace(/```json\s*/, '')
-                        .replace(/```\s*$/, '')
-                        .trim();
-                    const parsed = JSON.parse(lastBlock);
-                    // If it's an array (Reduce output), take the first element
+                let targetJson: string | null = null;
+
+                // Strategy 1: Find the JSON block after "REDUCE PHASE" marker (most complete data)
+                const reduceIdx = policy.raw_json.indexOf("REDUCE PHASE");
+                if (reduceIdx !== -1) {
+                    const afterReduce = policy.raw_json.substring(reduceIdx);
+                    const reduceMatch = afterReduce.match(/```json\s*([\s\S]*?)```/);
+                    if (reduceMatch) {
+                        targetJson = reduceMatch[1].trim();
+                    }
+                }
+
+                // Strategy 2: Fall back to the largest json block (likely the most complete)
+                if (!targetJson) {
+                    const jsonBlocks = policy.raw_json.match(/```json\s*([\s\S]*?)```/g);
+                    if (jsonBlocks && jsonBlocks.length > 0) {
+                        let largest = '';
+                        for (const block of jsonBlocks) {
+                            const content = block.replace(/```json\s*/, '').replace(/```\s*$/, '').trim();
+                            if (content.length > largest.length) largest = content;
+                        }
+                        targetJson = largest;
+                    }
+                }
+
+                if (targetJson) {
+                    const parsed = JSON.parse(targetJson);
+                    // If it's an array (Reduce output [{ }]), take the first element
                     details = Array.isArray(parsed) ? parsed[0] : parsed;
                 }
             }
