@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Users, Settings, LogOut, FileText } from "lucide-react";
+import { Home, Users, Settings, LogOut, FileText, CalendarDays } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth";
 
 const navItems = [
     { name: "保单金库", href: "/dashboard", icon: Home },
     { name: "家庭图谱", href: "/dashboard/members", icon: Users },
+    { name: "缴费日历", href: "/dashboard/calendar", icon: CalendarDays },
 ];
 
 export function Sidebar() {
