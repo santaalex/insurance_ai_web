@@ -25,14 +25,31 @@ const getPolicyIcon = (type: string) => {
 export function PolicyDrawer({ policy, onClose }: PolicyDrawerProps) {
     if (!policy) return null;
 
-    // Try to parse the rich JSON data
+    // Try to parse the rich JSON data (raw_json may contain Markdown + JSON mixed content)
     let details: any = null;
     try {
         if (policy.raw_json) {
             details = JSON.parse(policy.raw_json);
         }
-    } catch (e) {
-        console.error("Failed to parse policy raw_json:", e);
+    } catch {
+        // Fallback: extract the last JSON object/array from the mixed Markdown+JSON content
+        try {
+            if (policy.raw_json) {
+                // Find the last ```json ... ``` code block
+                const jsonBlocks = policy.raw_json.match(/```json\s*([\s\S]*?)```/g);
+                if (jsonBlocks && jsonBlocks.length > 0) {
+                    const lastBlock = jsonBlocks[jsonBlocks.length - 1]
+                        .replace(/```json\s*/, '')
+                        .replace(/```\s*$/, '')
+                        .trim();
+                    const parsed = JSON.parse(lastBlock);
+                    // If it's an array (Reduce output), take the first element
+                    details = Array.isArray(parsed) ? parsed[0] : parsed;
+                }
+            }
+        } catch (e2) {
+            console.error("Failed to extract JSON from raw_json:", e2);
+        }
     }
 
     // Format money safely
