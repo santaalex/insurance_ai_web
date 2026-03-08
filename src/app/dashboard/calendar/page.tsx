@@ -43,32 +43,19 @@ export default function CalendarPage() {
         <div className="space-y-8 animate-in fade-in duration-500">
             <style jsx global>{`
                 .has-premium {
-                    position: relative;
-                }
-                .has-premium::after {
-                    content: '';
-                    position: absolute;
-                    bottom: 2px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    width: 4px;
-                    height: 4px;
-                    border-radius: 50%;
-                    background-color: #10b981;
+                    background-color: #d1fae5 !important;
+                    color: #047857 !important;
+                    font-weight: 700 !important;
+                    border: 1px solid #a7f3d0 !important;
                 }
                 .has-expiry {
-                    position: relative;
+                    background-color: #fee2e2 !important;
+                    color: #b91c1c !important;
+                    font-weight: 700 !important;
+                    border: 1px solid #fecaca !important;
                 }
-                .has-expiry::after {
-                    content: '';
-                    position: absolute;
-                    bottom: 2px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    width: 4px;
-                    height: 4px;
-                    border-radius: 50%;
-                    background-color: #ef4444;
+                .rdp-months {
+                    width: 100%;
                 }
             `}</style>
             <div className="flex flex-col gap-1">
@@ -94,9 +81,12 @@ export default function CalendarPage() {
                                 selected={selectedDate}
                                 onSelect={setSelectedDate}
                                 locale={zhCN}
-                                className="rounded-md border border-slate-100 shadow-sm"
+                                className="rounded-md border border-slate-100 shadow-sm w-full xl:w-auto overflow-x-auto pb-4"
                                 modifiers={modifiers}
                                 modifiersClassNames={modifiersClassNames}
+                                numberOfMonths={3}
+                                pagedNavigation
+                                showOutsideDays={false}
                             />
 
                             <div className="space-y-6 flex-1">
