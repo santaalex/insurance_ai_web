@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useAuthStore } from "@/store/auth";
 import { useChatStore } from "@/store/chat";
-import { getBaseUrl } from "@/lib/request";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -39,9 +38,9 @@ export default function ChatPage() {
         setIsLoading(true);
 
         try {
-            const apiUrl = getBaseUrl();
-
-            const response = await fetch(`${apiUrl}/api/chat/stream`, {
+            // Use relative path to route through the Next.js proxy (app/api/[...slug]/route.ts)
+            // This prevents Mixed Content (HTTPS -> HTTP) and CORS issues on Vercel.
+            const response = await fetch(`/api/chat/stream`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
