@@ -1,7 +1,6 @@
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { PolicyUploaderModal } from "@/components/policy-uploader-modal";
-import { ChatBot } from "@/components/chat/chat-bot";
 
 export default function DashboardLayout({
     children,
@@ -17,8 +16,6 @@ export default function DashboardLayout({
                     {children}
                     {/* Global Upload Trigger */}
                     <PolicyUploaderModal />
-                    {/* Global AI Chat Assistant */}
-                    <ChatBot />
                 </main>
             </div>
         </div>
