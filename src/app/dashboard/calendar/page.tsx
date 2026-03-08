@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCalendar, type CalendarEvent } from "@/hooks/use-calendar";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -12,7 +12,15 @@ import { zhCN } from "date-fns/locale";
 
 export default function CalendarPage() {
     const { events, isLoading } = useCalendar();
-    const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+    const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+        setSelectedDate(new Date());
+    }, []);
+
+    if (!mounted) return null;
 
     // Group events by date for the small indicators
     const eventsOnSelectedDate = events.filter(event =>
