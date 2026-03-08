@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useAuthStore } from "@/store/auth";
 import { useChatStore } from "@/store/chat";
+import { getBaseUrl } from "@/lib/request";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -38,7 +39,7 @@ export default function ChatPage() {
         setIsLoading(true);
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_GATEWAY_URL || "http://127.0.0.1:8000";
+            const apiUrl = getBaseUrl();
 
             const response = await fetch(`${apiUrl}/api/chat/stream`, {
                 method: "POST",
@@ -146,8 +147,8 @@ export default function ChatPage() {
                                 </div>
                                 <div
                                     className={`rounded-3xl p-4 md:p-5 text-sm md:text-base shadow-sm whitespace-pre-wrap leading-relaxed ${message.role === 'user'
-                                            ? 'bg-indigo-600 text-white rounded-tr-sm'
-                                            : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm'
+                                        ? 'bg-indigo-600 text-white rounded-tr-sm'
+                                        : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm'
                                         }`}
                                 >
                                     {message.content}

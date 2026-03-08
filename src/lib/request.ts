@@ -1,6 +1,16 @@
 import axios from "axios";
 import { useAuthStore } from "@/store/auth";
 
+export const getBaseUrl = () => {
+    // Determine the base URL dynamically based on environment.
+    // In production (Vercel), it should be relative for rewriting, or the absolute URL if configured.
+    if (process.env.NEXT_PUBLIC_GATEWAY_URL) {
+        return process.env.NEXT_PUBLIC_GATEWAY_URL;
+    }
+    // Local fallback
+    return "http://127.0.0.1:8000";
+};
+
 export const request = axios.create({
     // The Next.js rewrite proxy handles mapping /api to the backend. This is CRUCIAL to prevent Mixed Content (HTTPS -> HTTP) errors on Vercel.
     baseURL: "/api",
