@@ -108,7 +108,7 @@ export function PolicyUploaderModal() {
 
             // 阶段3: 前端直连部署在香港服务器的 AI 网关，绕过 Vercel 的 60s Serverless 限制
             // 注意：这里必须用完全一致的 https 协议域名，否则会触发 Mixed Content 或 CORS 拦截
-            const response = await fetch("https://47.238.82.250.nip.io/api/policy/extract_and_save", {
+            const response = await fetch(targetUrl, {
                 method: "POST",
                 body: formData,
                 headers: {
@@ -121,7 +121,7 @@ export function PolicyUploaderModal() {
                 try {
                     const errorData = await response.json()
                     msg = errorData.detail || msg
-                } catch (e) {
+                } catch {
                     // 忽略 json 解析错误
                 }
                 throw new Error(msg)

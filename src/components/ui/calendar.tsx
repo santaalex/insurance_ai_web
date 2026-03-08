@@ -57,11 +57,12 @@ function Calendar({
                 ...classNames,
             }}
             components={{
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 Chevron: (props: any) => {
                     const Icon = props.orientation === "left" ? ChevronLeft : ChevronRight;
                     return <Icon className="h-4 w-4" />;
                 },
-            } as any}
+            }}
             {...props}
         />
     );

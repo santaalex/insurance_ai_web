@@ -57,9 +57,9 @@ export default function LoginPage() {
       await request.post("/auth/send-sms", { phone });
       toast.success("验证码已发送，请注意查收");
       setCountdown(60); // Start 60s countdown
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Axios error handling to get backend detail message if available
-      const errorMsg = error.response?.data?.detail || "发送失败，请稍后再试";
+      const errorMsg = (error as { response?: { data?: { detail?: string } } }).response?.data?.detail || "发送失败，请稍后再试";
       toast.error(errorMsg);
       console.error(error);
     }
@@ -93,8 +93,8 @@ export default function LoginPage() {
           router.push("/dashboard");
         }, 1000);
       }
-    } catch (error: any) {
-      const errorMsg = error.response?.data?.detail || "验证码错误或已过期";
+    } catch (error: unknown) {
+      const errorMsg = (error as { response?: { data?: { detail?: string } } }).response?.data?.detail || "验证码错误或已过期";
       toast.error("登录异常", {
         description: errorMsg,
       });

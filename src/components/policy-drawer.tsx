@@ -1,6 +1,5 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { ShieldAlert, ShieldCheck, HeartPulse, Stethoscope, CarFront, Briefcase, FileText } from "lucide-react";
 import { Policy } from "@/hooks/use-policies";
@@ -26,6 +25,7 @@ export function PolicyDrawer({ policy, onClose }: PolicyDrawerProps) {
     if (!policy) return null;
 
     // Try to parse the rich JSON data (raw_json may contain Markdown + JSON mixed content)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let details: any = null;
     try {
         if (policy.raw_json) {
@@ -72,6 +72,7 @@ export function PolicyDrawer({ policy, onClose }: PolicyDrawerProps) {
     }
 
     // Format money safely
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formatMoney = (amount: any) => {
         if (amount === undefined || amount === null || amount === "null" || amount === "") return "¥0";
         const num = String(amount).replace(/[^0-9.]/g, '');
@@ -79,6 +80,7 @@ export function PolicyDrawer({ policy, onClose }: PolicyDrawerProps) {
         return String(amount);
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const safeVal = (val: any, fallback = "-") => {
         if (val === undefined || val === null || val === "null" || val === "None" || val === "") return fallback;
         return val;
@@ -204,6 +206,7 @@ export function PolicyDrawer({ policy, onClose }: PolicyDrawerProps) {
                                     保障范围明细
                                 </h3>
                                 <div className="space-y-3">
+                                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                     {details.coverages.map((cov: any, idx: number) => (
                                         <div key={idx} className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
                                             <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-start gap-4">
@@ -269,6 +272,6 @@ export function PolicyDrawer({ policy, onClose }: PolicyDrawerProps) {
                     </div>
                 </ScrollArea>
             </SheetContent>
-        </Sheet>
+        </Sheet >
     );
 }

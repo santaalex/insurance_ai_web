@@ -1,4 +1,4 @@
-import { FileText, ShieldCheck, MoreVertical, CreditCard } from "lucide-react";
+import { FileText, ShieldCheck, MoreVertical } from "lucide-react";
 import { Policy } from "@/hooks/use-policies";
 
 export function PolicyCard({ policy, onClick }: { policy: Policy; onClick?: () => void }) {

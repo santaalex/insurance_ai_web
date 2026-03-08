@@ -1,22 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useCalendar, type CalendarEvent } from "@/hooks/use-calendar";
+import { useCalendar } from "@/hooks/use-calendar";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { CalendarDays, Wallet, Clock, AlertCircle, ChevronRight } from "lucide-react";
 import { format, isSameDay, parseISO } from "date-fns";
 import { zhCN } from "date-fns/locale";
 
 export default function CalendarPage() {
-    const { events, isLoading } = useCalendar();
+    const { events } = useCalendar();
     const [selectedDate, setSelectedDate] = useState<Date | undefined>();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSelectedDate(new Date());
     }, []);
 
