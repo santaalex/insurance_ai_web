@@ -96,8 +96,7 @@ export default function CalendarPage() {
                                 locale={zhCN}
                                 className="rounded-md border border-slate-100 shadow-sm"
                                 modifiers={modifiers}
-                            // We'll show event dots using CSS or custom renderers if needed
-                            // For now, simple selection
+                                modifiersClassNames={modifiersClassNames}
                             />
 
                             <div className="space-y-6 flex-1">
