@@ -22,8 +22,8 @@ async function handleProxy(req: NextRequest, paramsPromise: Promise<{ slug: stri
         const { slug } = await paramsPromise;
         const slugPath = slug.join("/");
 
-        // If Vercel env var is missing, default directly to the new Alibaba Cloud HK backend
-        let backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://47.238.82.250:8000";
+        // If Vercel env var is missing, default directly to the new Alibaba Cloud HK backend (Proxy via Nginx on Port 80)
+        let backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://47.238.82.250";
         if (backendUrl.endsWith("/")) {
             backendUrl = backendUrl.slice(0, -1);
         }
