@@ -54,14 +54,20 @@ async function handleProxy(req: NextRequest, paramsPromise: Promise<{ slug: stri
         }
 
         const response = await fetch(targetUrl, fetchInit);
-
         console.log(`[Proxy] Backend responded with status: ${response.status} ${response.statusText}`);
 
         // Forward the backend response back to the client
+        // We MUST strip 'content-encoding' because 'fetch' might have decompressed the body,
+        // and 'content-length' because the decompressed body size differs from the compressed one.
+        const resHeaders = new Headers(response.headers);
+        resHeaders.delete("content-encoding");
+        resHeaders.delete("content-length");
+        resHeaders.delete("transfer-encoding");
+
         return new NextResponse(response.body, {
             status: response.status,
             statusText: response.statusText,
-            headers: response.headers,
+            headers: resHeaders,
         });
 
     } catch (error: unknown) {
