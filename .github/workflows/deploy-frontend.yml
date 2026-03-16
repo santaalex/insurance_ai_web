@@ -1,0 +1,43 @@
+name: Deploy Frontend to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: 🚀 Deploy to Hong Kong VPS
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: ✅ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔑 Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 47.238.82.250
+          username: root
+          password: ${{ secrets.VPS_PASSWORD }}
+          command_timeout: 15m
+          script: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+            
+            echo "📦 Pulling latest code..."
+            cd /www/wwwroot/insurance_ai_web
+            git pull origin main
+            
+            echo "📥 Installing dependencies..."
+            npm install
+            
+            echo "🔨 Building..."
+            npm run build
+            
+            echo "🔄 Restarting PM2..."
+            pm2 restart insurance-web || pm2 start npm --name "insurance-web" -- start
+            pm2 save
+            
+            echo "✅ Deploy complete!"
+            curl -s http://127.0.0.1:3000 > /dev/null && echo "Frontend: OK" || echo "Frontend: Check PM2 logs"
