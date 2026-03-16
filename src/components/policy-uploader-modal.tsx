@@ -102,12 +102,10 @@ export function PolicyUploaderModal() {
 
             const token = useAuthStore.getState().token;
 
-            // Direct upload to the new Baota HTTPS Reverse Proxy on the HK Server
-            // This bypasses Vercel's 60s timeout entirely while maintaining strict HTTPS!
-            const targetUrl = "https://47.238.82.250.nip.io/api/policy/extract_and_save";
+            // Same-host deployment: relative path is proxied by Nginx to FastAPI:8001
+            // No more hardcoded nip.io HTTPS URL needed!
+            const targetUrl = "/api/policy/extract_and_save";
 
-            // 阶段3: 前端直连部署在香港服务器的 AI 网关，绕过 Vercel 的 60s Serverless 限制
-            // 注意：这里必须用完全一致的 https 协议域名，否则会触发 Mixed Content 或 CORS 拦截
             const response = await fetch(targetUrl, {
                 method: "POST",
                 body: formData,
@@ -115,6 +113,7 @@ export function PolicyUploaderModal() {
                     Authorization: `Bearer ${token}`,
                 }
             })
+
 
             if (!response.ok) {
                 let msg = `HTTP error! status: ${response.status}`
